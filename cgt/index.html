@@ -1,0 +1,579 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CGT Referee Tool</title><style>@import url(https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap);@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap);:root{--background-color:#121212;--surface-color:#1e1e1e;--primary-text:#e0e0e0;--secondary-text:#b0b0b0;--primary-accent:#2979ff;--green:#00c853;--red:#d50000;--orange:#ff9100;--yellow:#ffc400;--purple:#6a1b9a;--blue-grey:#455a64;--border-color:#333333}body{background:var(--background-color);font-family:'Cherry Bomb One',cursive;font-weight:400;color:var(--primary-text);display:flex;flex-direction:column;align-items:center;margin:0;padding:24px;box-sizing:border-box;letter-spacing:1.5px}h1{font-weight:700;color:#fff;font-size:2.5em;margin-bottom:24px}.container{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:24px;width:100%;max-width:1600px}.main-column{flex:2;min-width:350px;display:flex;flex-direction:column;gap:24px}.side-column{flex:1;min-width:320px;display:flex;flex-direction:column;gap:24px}.widget{background:var(--surface-color);border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.3);border:1px solid var(--border-color);text-align:center}.widget h2{font-weight:600;margin-top:0;margin-bottom:20px;font-size:1.25em;color:#fff;border-bottom:1px solid var(--border-color);padding-bottom:12px}.stopwatch-display{font-size:5em;font-weight:700;margin:16px 0;transition:color .3s,text-shadow .3s;line-height:1.1;font-family:Inter,sans-serif}.countdown-display{font-size:2.5em;font-weight:700;color:var(--yellow);min-height:50px;cursor:pointer}#currentTeam{font-weight:500;font-size:1.2em;min-height:24px;margin-bottom:16px}.button-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}.button-grid button{width:100%;margin:0}.button-group{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:20px}.button-group button{margin:0}button{border:none;color:#fff;padding:12px 20px;font-size:1em;border-radius:10px;cursor:pointer;transition:all .2s;font-weight:500;background-color:var(--blue-grey);border-bottom:3px solid rgba(0,0,0,.3);font-family:'Cherry Bomb One',cursive}button:disabled{opacity:.5;cursor:not-allowed}button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 4px 15px rgba(0,0,0,.4);border-bottom-width:5px}button:active:not(:disabled){transform:translateY(1px);border-bottom-width:2px}.button-start{background-color:var(--green)}.button-pause{background-color:var(--red)}.button-save{background-color:var(--orange)}.button-switch{background-color:var(--primary-accent)}.button-penalty{background-color:var(--yellow);color:#111}.button-clear{background-color:var(--purple)}.button-toggle-on{background:#1b5e20}.button-toggle-off{background:#b71c1c}.team-inputs input[type=text]{width:100%;box-sizing:border-box;padding:10px;margin:6px 0;border-radius:8px;border:none;outline:0;background:#2c2c2c;color:#fff;font-size:1em;text-align:center}.team-inputs .team-setup{display:flex;align-items:center;gap:12px;margin-bottom:16px}.team-inputs input[type=color]{width:48px;height:48px;border:none;padding:0;background:0 0;cursor:pointer;border-radius:8px}.scoreboard{display:flex;justify-content:space-around;gap:16px;align-items:center;padding:10px 0}.team-score{background-color:#2c2c2c;border-radius:12px;padding:16px;flex:1;border-left:8px solid;text-align:left;transition:border-color .3s}.team-score .team-name{font-size:1.1em;font-weight:600;margin-bottom:8px;color:var(--primary-text)}.team-score .score{font-size:2.5em;font-weight:700;line-height:1;color:#fff}.history,.penalty-log{height:350px;overflow-y:auto;text-align:left;scrollbar-width:thin;scrollbar-color:var(--primary-accent) #2c2c2c}.history ul{list-style:none;padding:0;margin:0}.history li{border-bottom:none}.round-entry{background-color:#2a2a2a;border-radius:10px;padding:12px 16px;margin-bottom:12px;border-left:5px solid var(--primary-accent)}.history li:last-child{margin-bottom:0}.round-header{font-weight:600;color:#fff;font-size:1em;margin-bottom:12px;text-align:left;border-bottom:1px solid var(--border-color);padding-bottom:8px}.round-times{display:flex;justify-content:space-between;gap:10px}.round-times p{margin:4px 0;font-weight:500;flex-basis:50%}.round-winner{font-size:1em;color:var(--yellow);margin-top:12px;text-align:center;font-weight:600;font-style:normal;background:rgba(255,196,0,.1);padding:8px;border-radius:8px}.penalty-log{background:#111;padding:10px;border-radius:8px;color:var(--secondary-text);font-size:.9em}.penalty-log div{padding:4px 0;border-bottom:1px solid #2b2b2b}.penalty-log div:last-child{border-bottom:none}.alert{color:var(--red);font-weight:600;font-size:1.1em;margin-top:15px;min-height:24px;cursor:pointer}#notepad{width:100%;box-sizing:border-box;height:180px;background:#2c2c2c;color:var(--primary-text);border:1px solid var(--border-color);border-radius:12px;padding:15px;font-size:1em;line-height:1.5;outline:0;resize:vertical;margin-top:16px}#notepad:focus{border-color:var(--primary-accent)}#penaltyModal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#2a2a2a;color:var(--primary-text);padding:25px;border-radius:16px;z-index:1000;width:90%;max-width:400px;flex-direction:column;box-shadow:0 10px 30px rgba(0,0,0,.5);border:1px solid #555}#penaltyModal h3{margin:0 0 20px 0;text-align:center;color:var(--orange)}#penaltyModal label{margin-top:10px;margin-bottom:5px;font-weight:500;text-align:left}#penaltyModal input,#penaltyModal select{width:100%;padding:12px;font-size:1em;border-radius:8px;border:none;background-color:#3f3f3f;color:var(--primary-text);box-sizing:border-box}.modal-buttons{display:flex;justify-content:space-between;gap:12px;margin-top:20px}.modal-buttons button{width:100%;margin:0}.tab-container{display:flex;justify-content:center;margin-bottom:20px;gap:8px}.tab-button{flex:1;background-color:#000;color:#fff;border:1px solid var(--border-color);padding:10px;border-radius:8px;cursor:pointer;transition:background-color .3s;font-size:.9em}.tab-button:hover{background-color:#333}.tab-button.active{background-color:var(--primary-accent);color:#fff;font-weight:600}.tab-content{display:none}.tab-content.active{display:block}.site-footer{width:100%;text-align:center;padding:20px 0;margin-top:32px;color:var(--secondary-text);font-size:.9em;border-top:1px solid var(--border-color)}a{color:var(--secondary-text)}</style></head><body><div class="container"><div class="main-column"><div class="widget"><div class="countdown-display" id="countdownDisplay"></div><div class="stopwatch-display" id="display">00:00.00</div><div id="currentTeam"></div><div class="alert" id="alertMessage"></div><div class="button-grid"><button class="button-start" id="startResumebutton">Start</button><button class="button-pause" id="pausebutton">Stop</button><button class="button-save" id="savebutton">Save Round</button><button class="button-switch" id="switchbutton">Switch Team</button></div><div class="button-group"><button id="resetbutton">Reset Timer</button><button class="button-clear" id="clearbutton">Clear All</button><button class="button-penalty" id="penaltybutton">Penalty</button><button id="countdownTogglebutton" class="button-toggle-on">Countdown: ON</button><button id="autoStopTogglebutton" class="button-toggle-on">Auto Stop: ON</button></div></div><div class="widget"><h2>Notepad</h2><textarea id="notepad" placeholder="Write your notes here..."></textarea></div></div><div class="side-column"><div class="widget"><h2>Team Setup</h2><div class="team-inputs"><div class="team-setup"><input type="text" id="team1Name" placeholder="N/A" value="N/A"> <input type="color" id="team1Color" value="#FFFFFF"></div><div class="team-setup"><input type="text" id="team2Name" placeholder="N/A" value="N/A"> <input type="color" id="team2Color" value="#000000"></div></div></div><div class="widget"><div class="tab-container"><button class="tab-button active" data-tab="scoreboard">Scoreboard</button><button class="tab-button" data-tab="history">Round History</button><button class="tab-button" data-tab="penalties">Penalty Log</button></div><div id="scoreboardContent" class="tab-content active"><div class="scoreboard"><div class="team-score" id="team1ScoreCard"><div class="team-name" id="t1Name">N/A</div><div class="score" id="t1Score">0</div></div><div class="team-score" id="team2ScoreCard"><div class="team-name" id="t2Name">N/A</div><div class="score" id="t2Score">0</div></div></div></div><div id="historyContent" class="tab-content"><div class="history"><ul id="historyList"></ul></div></div><div id="penaltiesContent" class="tab-content"><div class="penalty-log" id="penaltyLog"></div></div></div></div></div><div id="penaltyModal"><h3 id="penaltyModalTitle">Apply Penalty</h3><div id="penaltyTeamSelection"><label for="penaltyTeam">Team:</label><select id="penaltyTeam"></select></div><label for="penaltyRule">Rule:</label><select id="penaltyRule" onchange="togglePlayerInput()"><option value="" disabled="disabled" selected="selected">Select Rule</option>   <optgroup label="Game Progression">     <option value="stalling">Stalling</option>     <option value="time_wasting">Time Wasting (3x 2-min stops allowed)</option>     <option value="map_hopping">Map Hopping</option>   </optgroup>   <optgroup label="Prohibited Tactics">     <option value="hiding">Hiding</option>     <option value="lagging">Lagging (Refuses to leave)</option>     <option value="dc_flicking">DC Flicking</option>     <option value="in_game_camera">Using In-Game Camera</option>     <option value="playspace_abuse">PSA / Crouch Jumping / Rec Room Glitch</option>     <option value="update_features">Activating Update Features</option>     <option value="fishlegs">Using Fishlegs</option>     <option value="illegal_hz">Using Illegal Hz Options</option>   </optgroup>   <optgroup label="Subbing Rules">     <option value="banned_players_unofficial">Using Banned Players in Unofficial Scrim</option>     <option value="subs_off_team">Using Subs Off Team</option>   </optgroup>   <optgroup label="Respecting Ref Rules">     <option value="toxicity_player">Toxicity Towards Ref (Player)</option>     <option value="toxicity_team">Toxicity Towards Ref (Team)</option>     <option value="toxicity_all">Toxicity Towards Ref (Everyone)</option>     <option value="arguing_ref">Arguing with Ref</option>   </optgroup></select><div id="playerInput" style="margin-top:10px;display:none"><label for="playerName">Player Name:</label><input type="text" id="playerName" autocomplete="off"></div><div class="modal-buttons"><button class="button-start" onclick="submitPenalty()">Submit</button><button class="button-pause" onclick="closePenaltyMenu()">Cancel</button></div></div><footer class="site-footer"><p>Made by Neptune &lt;3</p><p>Penalty System by<a href="https://refbread.github.io/CGT">Refbread</a></p></footer><script>let startTime, timerInterval, countdownInterval;
+      let elapsed = 0;
+      let running = false;
+      let countdownActive = false;
+      let isRoundSaved = false;
+      let timeCapSoundPlayed = false;
+
+      let currentTeam = 1;
+      let team1Score = 0,
+        team2Score = 0;
+      let roundNumber = 1;
+      let currentRoundData = { 1: null, 2: null };
+      let isCountdownEnabled = true;
+      let isAutoStopEnabled = true;
+
+      let offenseCounts = { team: {}, player: {} };
+
+      const storageKey = "CGTRefTool";
+
+      const display = document.getElementById("display");
+      const countdownDisplay = document.getElementById("countdownDisplay");
+      const startResumebutton = document.getElementById("startResumebutton");
+      const alertMessage = document.getElementById("alertMessage");
+      const historyList = document.getElementById("historyList");
+      const currentTeamLabel = document.getElementById("currentTeam");
+      const notepad = document.getElementById("notepad");
+      const countdownTogglebutton = document.getElementById("countdownTogglebutton");
+      const autoStopTogglebutton = document.getElementById("autoStopTogglebutton");
+
+      const team1NameInput = document.getElementById("team1Name");
+      const team1ColorInput = document.getElementById("team1Color");
+      const team2NameInput = document.getElementById("team2Name");
+      const team2ColorInput = document.getElementById("team2Color");
+
+      const t1Name = document.getElementById("t1Name");
+      const t2Name = document.getElementById("t2Name");
+      const t1ScoreEl = document.getElementById("t1Score");
+      const t2ScoreEl = document.getElementById("t2Score");
+
+      const penaltyLog = document.getElementById("penaltyLog");
+
+      function saveState() {
+        const state = {
+          team1Name: team1NameInput.value,
+          team1Color: team1ColorInput.value,
+          team2Name: team2NameInput.value,
+          team2Color: team2ColorInput.value,
+          team1Score,
+          team2Score,
+          currentTeam,
+          roundNumber,
+          historyHTML: historyList.innerHTML,
+          notepadContent: notepad.value,
+          isCountdownEnabled,
+          isAutoStopEnabled,
+          currentRoundData,
+          offenseCounts,
+          penaltyLogHTML: penaltyLog.innerHTML,
+        };
+        localStorage.setItem(storageKey, JSON.stringify(state));
+      }
+
+      function loadState() {
+        const savedState = localStorage.getItem(storageKey);
+        if (savedState) {
+          const state = JSON.parse(savedState);
+          team1NameInput.value = state.team1Name || "N/A";
+          team1ColorInput.value = state.team1Color || "#FFFFFF";
+          team2NameInput.value = state.team2Name || "N/A";
+          team2ColorInput.value = state.team2Color || "#000000";
+          team1Score = state.team1Score || 0;
+          team2Score = state.team2Score || 0;
+          t1ScoreEl.textContent = team1Score;
+          t2ScoreEl.textContent = team2Score;
+          currentTeam = state.currentTeam || 1;
+          roundNumber = state.roundNumber || 1;
+          historyList.innerHTML = state.historyHTML || "";
+          notepad.value = state.notepadContent || "";
+          isCountdownEnabled = state.isCountdownEnabled !== false;
+          isAutoStopEnabled = state.isAutoStopEnabled !== false;
+          currentRoundData = state.currentRoundData || { 1: null, 2: null };
+          offenseCounts = state.offenseCounts || { team: {}, player: {} };
+          penaltyLog.innerHTML = state.penaltyLogHTML || "";
+          updateCountdownToggle();
+          updateAutoStopToggle();
+        } else {
+            updateAutoStopToggle();
+        }
+      }
+
+      function updateCurrentTeamDisplay() {
+        const name =
+          currentTeam === 1 ? team1NameInput.value : team2NameInput.value;
+        const color =
+          currentTeam === 1 ? team1ColorInput.value : team2ColorInput.value;
+        currentTeamLabel.innerHTML = `Running: <span style="color:${color};">${name}</span>`;
+        display.style.color = color;
+        display.style.textShadow = `0 0 12px ${color}55`;
+        updateScoreboardNames();
+      }
+
+      function updateScoreboardNames() {
+        t1Name.textContent = team1NameInput.value;
+        document.getElementById('team1ScoreCard').style.borderColor = team1ColorInput.value;
+
+        t2Name.textContent = team2NameInput.value;
+        document.getElementById('team2ScoreCard').style.borderColor = team2ColorInput.value;
+      }
+
+      function updateDisplay() {
+        const time = Date.now() - startTime + elapsed;
+        const minutes = Math.floor(time / 60000);
+        const seconds = Math.floor((time % 60000) / 1000);
+        const milliseconds = Math.floor((time % 1000) / 10);
+        display.textContent = `${String(minutes).padStart(2, "0")}:${String(
+          seconds
+        ).padStart(2, "0")}.${String(milliseconds).padStart(2, "0")}`;
+
+        if (minutes >= 3) {
+            if (!timeCapSoundPlayed) {
+                alertMessage.textContent = "⏱️ Time Cap Reached (3:00)";
+                playSound("triangle", 440, 0.2);
+                timeCapSoundPlayed = true;
+            }
+            if (isAutoStopEnabled && running) {
+                pauseTimer();
+                alertMessage.textContent = "⏱️ Time Cap Reached (3:00)";
+            }
+        }
+      }
+
+      function updateCountdownToggle() {
+        countdownTogglebutton.textContent = `Countdown: ${
+          isCountdownEnabled ? "ON" : "OFF"
+        }`;
+        countdownTogglebutton.className = isCountdownEnabled
+          ? "button-toggle-on"
+          : "button-toggle-off";
+      }
+
+      function updateAutoStopToggle() {
+          autoStopTogglebutton.textContent = `Auto Stop: ${ isAutoStopEnabled ? "ON" : "OFF" }`;
+          autoStopTogglebutton.className = 'button-toggle-' + (isAutoStopEnabled ? 'on' : 'off');
+      }
+
+      function beginMainTimer() {
+        if (running) return;
+        startTime = Date.now();
+        timerInterval = setInterval(updateDisplay, 10);
+        running = true;
+        startResumebutton.textContent = "Start";
+      }
+
+      function startOrResumeTimer() {
+        if (isRoundSaved) {
+          resetCurrentTimer();
+        }
+        if (running || countdownActive) return;
+
+        if (isCountdownEnabled && elapsed === 0) {
+          countdownActive = true;
+          startResumebutton.disabled = true;
+          let countdown = 10;
+          countdownDisplay.textContent = countdown;
+          updateCurrentTeamDisplay();
+
+          countdownInterval = setInterval(() => {
+            countdown--;
+            countdownDisplay.textContent = countdown > 0 ? countdown : "GO!";
+            if (countdown <= 0) {
+              clearInterval(countdownInterval);
+              playSound("sine", 880, 0.2);
+              setTimeout(() => {
+                countdownDisplay.textContent = "";
+                countdownActive = false;
+                startResumebutton.disabled = false;
+                beginMainTimer();
+              }, 500);
+            }
+          }, 1000);
+        } else {
+          beginMainTimer();
+        }
+      }
+
+      function pauseTimer() {
+        if (running) {
+          clearInterval(timerInterval);
+          elapsed += Date.now() - startTime;
+          running = false;
+          startResumebutton.textContent = "Resume";
+        }
+        if (countdownActive) {
+          clearInterval(countdownInterval);
+          countdownActive = false;
+          countdownDisplay.textContent = "";
+          startResumebutton.disabled = false;
+        }
+      }
+
+      function resetCurrentTimer() {
+        pauseTimer();
+        clearInterval(timerInterval);
+        clearInterval(countdownInterval);
+        elapsed = 0;
+        running = false;
+        countdownActive = false;
+        isRoundSaved = false;
+        timeCapSoundPlayed = false;
+        startResumebutton.disabled = false;
+        startResumebutton.textContent = "Start";
+        display.textContent = "00:00.00";
+        countdownDisplay.textContent = "";
+      }
+
+      function saveRound() {
+        pauseTimer();
+        if (elapsed === 0) {
+          alertMessage.textContent = "Timer not Started. Can't Save.";
+          return;
+        }
+
+        currentRoundData[currentTeam] = {
+          time: elapsed,
+          timeString: display.textContent,
+          name: currentTeam === 1 ? team1NameInput.value : team2NameInput.value,
+          color:
+            currentTeam === 1 ? team1ColorInput.value : team2ColorInput.value,
+        };
+
+        if (currentRoundData[1] && currentRoundData[2]) {
+          const team1 = currentRoundData[1];
+          const team2 = currentRoundData[2];
+          let winnerText = "";
+
+          if (Math.abs(team1.time - team2.time) <= 2000) {
+            winnerText = "Tie Round";
+            alertMessage.textContent = "🤝 Tie Round (2 second difference)";
+          } else if (team1.time > team2.time) {
+            team1Score++;
+            t1ScoreEl.textContent = team1Score;
+            winnerText = `${team1.name} won the round`;
+            alertMessage.textContent = `🏆 ${team1.name} wins the round!`;
+          } else {
+            team2Score++;
+            t2ScoreEl.textContent = team2Score;
+            winnerText = `${team2.name} won the round`;
+            alertMessage.textContent = `🏆 ${team2.name} wins the round!`;
+          }
+
+          const li = document.createElement("li");
+          li.className = "round-entry";
+          li.innerHTML = `
+                    <div class="round-header">Round ${roundNumber} - ${new Date().toLocaleTimeString()}</div>
+                    <div class="round-times">
+                        <p style="color:${team1.color};">${team1.name} - ${
+            team1.timeString
+          }</p>
+                        <p style="color:${team2.color};">${team2.name} - ${
+            team2.timeString
+          }</p>
+                    </div>
+                    <div class="round-winner">${winnerText}</div>
+                `;
+          historyList.prepend(li);
+
+          currentRoundData = { 1: null, 2: null };
+          roundNumber++;
+        } else {
+          alertMessage.textContent = `Round for ${currentRoundData[currentTeam].name} was saved. Switch teams to continue.`;
+        }
+
+        isRoundSaved = true;
+        saveState();
+      }
+
+      function switchTeam() {
+        currentTeam = currentTeam === 1 ? 2 : 1;
+        resetCurrentTimer();
+        updateCurrentTeamDisplay();
+        alertMessage.textContent = "";
+        saveState();
+      }
+
+      function clearHistory() {
+        historyList.innerHTML = "";
+        penaltyLog.innerHTML = "";
+        team1Score = 0;
+        team2Score = 0;
+        roundNumber = 1;
+        currentRoundData = { 1: null, 2: null };
+        offenseCounts = { team: {}, player: {} };
+        t1ScoreEl.textContent = "0";
+        t2ScoreEl.textContent = "0";
+        resetCurrentTimer();
+        saveState();
+      }
+
+      function toggleCountdown() {
+        isCountdownEnabled = !isCountdownEnabled;
+        updateCountdownToggle();
+        saveState();
+      }
+      
+      function toggleAutoStop() {
+          isAutoStopEnabled = !isAutoStopEnabled;
+          updateAutoStopToggle();
+          saveState();
+      }
+
+      const penaltyRules = {
+        stalling: [
+          "Warning to team",
+          "Player sits out round (chosen by punished team)",
+          "Forfeit of point",
+          "Forfeit of match",
+          "Stacking 1 month bans (player-specific)",
+        ],
+        time_wasting: [
+          "Allowed up to 3 stops",
+          "Skip to 2nd offense of stalling rule",
+        ],
+        map_hopping: [
+          "Forfeit round",
+          "Forfeit match & 1 month ban (player)",
+          "Stacking 1 month bans",
+        ],
+        hiding: ["Warning", "Forfeit round", "Forfeit match", "Stacking 1 month bans"],
+        lagging: [
+          "Forfeit match (if refuses to leave after 2 mins)",
+        ],
+        dc_flicking: ["Warning", "Forfeit round", "Forfeit match"],
+        in_game_camera: ["Forfeit round and 1 month ban"],
+        playspace_abuse: ["3 month ban", "Perm ban"],
+        update_features: [
+          "Warning",
+          "Forfeit round",
+          "Forfeit match",
+          "Stacking 1 month bans",
+        ],
+        fishlegs: ["Warning", "Forfeit round", "Forfeit match", "Stacking 1 month bans"],
+        illegal_hz: ["3 month ban", "Perm ban"],
+        banned_players_unofficial: ["Strong warning", "Disbandment"],
+        subs_off_team: ["Instant forfeit and disbandment"],
+        toxicity_player: ["Warning", "Sit out round", "Ejection from match"],
+        toxicity_team: [
+          "Warning",
+          "30 sec holding of tagger + warning",
+          "Point deduction + final warning",
+          "Match forfeit",
+        ],
+        toxicity_all: [
+          "Warning to both teams",
+          "Second warning",
+          "Rescheduling of scrim with different ref",
+        ],
+        arguing_ref: ["Let argue, but if disrespectful → punish as toxicity"],
+      };
+      const playerSpecificRules = [
+        "map_hopping",
+        "hiding",
+        "dc_flicking",
+        "in_game_camera",
+        "playspace_abuse",
+        "illegal_hz",
+        "toxicity_player",
+        "lagging",
+        "update_features",
+        "fishlegs",
+      ];
+
+      function togglePlayerInput() {
+        const rule = document.getElementById("penaltyRule").value;
+        const playerInputDiv = document.getElementById("playerInput");
+        const teamSelectionDiv = document.getElementById("penaltyTeamSelection");
+
+        if (rule === 'toxicity_all') {
+            playerInputDiv.style.display = 'none';
+            teamSelectionDiv.style.display = 'none';
+            document.getElementById("playerName").value = "";
+        } else {
+            teamSelectionDiv.style.display = 'block';
+            if (playerSpecificRules.includes(rule)) {
+                playerInputDiv.style.display = "block";
+            } else {
+                playerInputDiv.style.display = "none";
+                document.getElementById("playerName").value = "";
+            }
+        }
+      }
+
+      function openPenaltyMenu() {
+        if (running || countdownActive) {
+          alertMessage.textContent =
+            "Can't add penalty while Round is Running.";
+          return;
+        }
+        const penaltyTeamSelect = document.getElementById("penaltyTeam");
+        penaltyTeamSelect.innerHTML = `
+            <option value="1">${team1NameInput.value}</option>
+            <option value="2">${team2NameInput.value}</option>
+        `;
+        document.getElementById("penaltyModal").style.display = "flex";
+        document.getElementById("penaltyRule").selectedIndex = 0;
+        togglePlayerInput();
+        document.getElementById("playerName").value = "";
+      }
+
+      function closePenaltyMenu() {
+        document.getElementById("penaltyModal").style.display = "none";
+      }
+
+      function submitPenalty() {
+        const rule = document.getElementById("penaltyRule").value;
+        
+        if (!rule) {
+          alert("Select a Rule.");
+          return;
+        }
+        
+        if (rule === 'toxicity_all') {
+            const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            const ruleText = rule.replace(/_/g, " ");
+            
+            if (!offenseCounts.team['everyone']) offenseCounts.team['everyone'] = {};
+            if (!offenseCounts.team['everyone'][rule]) offenseCounts.team['everyone'][rule] = 0;
+            offenseCounts.team['everyone'][rule]++;
+            const offenseNum = offenseCounts.team['everyone'][rule];
+
+            const punishments = penaltyRules[rule] || ["404"];
+            const appliedPunishment = punishments[Math.min(offenseNum - 1, punishments.length - 1)];
+            const logMessage = `[${timestamp}] EVERYONE - ${ruleText} (#${offenseNum}): ${appliedPunishment}`;
+
+            const logEntry = document.createElement('div');
+            logEntry.textContent = logMessage;
+            logEntry.style.color = '#FFFFFF';
+            penaltyLog.appendChild(logEntry);
+            penaltyLog.scrollTop = penaltyLog.scrollHeight;
+
+            saveState();
+            closePenaltyMenu();
+            return; 
+        }
+
+        const playerName = document.getElementById("playerName").value.trim();
+        const selectedTeam = document.getElementById("penaltyTeam").value;
+
+        if (playerSpecificRules.includes(rule) && !playerName) {
+          alert("Enter a Name for the Player receiving the Punishment.");
+          return;
+        }
+
+        const teamName = (selectedTeam === "1") ? team1NameInput.value : team2NameInput.value;
+        const teamColor = (selectedTeam === "1") ? team1ColorInput.value : team2ColorInput.value;
+
+        if (!offenseCounts.team[selectedTeam]) offenseCounts.team[selectedTeam] = {};
+        if (!offenseCounts.team[selectedTeam][rule]) offenseCounts.team[selectedTeam][rule] = 0;
+        if (playerName && !offenseCounts.player[playerName]) offenseCounts.player[playerName] = {};
+        if (playerName && !offenseCounts.player[playerName][rule]) offenseCounts.player[playerName][rule] = 0;
+
+        let offenseNum;
+        let logMessage;
+        const timestamp = new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const ruleText = rule.replace(/_/g, " ");
+        const punishments = penaltyRules[rule] || ["404"];
+
+        if (playerSpecificRules.includes(rule)) {
+          offenseCounts.player[playerName][rule]++;
+          offenseNum = offenseCounts.player[playerName][rule];
+          const appliedPunishment = punishments[Math.min(offenseNum - 1, punishments.length - 1)];
+          logMessage = `[${timestamp}] ${playerName} - ${ruleText} (#${offenseNum}): ${appliedPunishment}`;
+        } else {
+          offenseCounts.team[selectedTeam][rule]++;
+          offenseNum = offenseCounts.team[selectedTeam][rule];
+          const appliedPunishment = punishments[Math.min(offenseNum - 1, punishments.length - 1)];
+          logMessage = `[${timestamp}] ${teamName} - ${ruleText} (#${offenseNum}): ${appliedPunishment}`;
+        }
+        
+        const logEntry = document.createElement('div');
+        logEntry.textContent = logMessage;
+        logEntry.style.color = teamColor;
+        penaltyLog.appendChild(logEntry);
+        penaltyLog.scrollTop = penaltyLog.scrollHeight;
+
+        saveState();
+        closePenaltyMenu();
+      }
+      
+      function initTabs() {
+        const tabContainer = document.querySelector('.tab-container');
+        tabContainer.addEventListener('click', (e) => {
+            if (e.target.matches('.tab-button')) {
+                const tabName = e.target.dataset.tab;
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.classList.remove('active');
+                });
+
+                document.getElementById(tabName + 'Content').classList.add('active');
+                e.target.classList.add('active');
+            }
+        });
+      }
+
+      let audioContext;
+
+      function playSound(type = "sine", frequency = 880, duration = 0.1) {
+        if (!audioContext) {
+          try {
+            audioContext = new (window.AudioContext ||
+              window.webkitAudioContext)();
+          } catch (e) {
+            console.error("Browser doesn't support audio sorry!");
+            return;
+          }
+        }
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(
+          frequency,
+          audioContext.currentTime
+        );
+
+        gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(
+          0.001,
+          audioContext.currentTime + duration
+        );
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + duration);
+      }
+
+      document.getElementById("startResumebutton").onclick = startOrResumeTimer;
+      document.getElementById("pausebutton").onclick = pauseTimer;
+      document.getElementById("resetbutton").onclick = resetCurrentTimer;
+      document.getElementById("savebutton").onclick = saveRound;
+      document.getElementById("switchbutton").onclick = switchTeam;
+      document.getElementById("clearbutton").onclick = clearHistory;
+      document.getElementById("penaltybutton").onclick = openPenaltyMenu;
+      countdownTogglebutton.onclick = toggleCountdown;
+      autoStopTogglebutton.onclick = toggleAutoStop;
+
+      [
+        team1NameInput,
+        team2NameInput,
+        team1ColorInput,
+        team2ColorInput,
+      ].forEach((input) =>
+        input.addEventListener("input", () => {
+          updateCurrentTeamDisplay();
+          saveState();
+        })
+      );
+
+      alertMessage.addEventListener("click", () => {
+        alertMessage.textContent = "";
+      });
+      countdownDisplay.addEventListener("click", () => {
+        countdownDisplay.textContent = "";
+      });
+
+      notepad.addEventListener("input", saveState);
+
+      window.addEventListener("load", () => {
+        loadState();
+        updateCurrentTeamDisplay();
+        initTabs();
+      });</script></body>
